@@ -1,0 +1,15 @@
+# Active working directory
+Temp
+
+# Don't think these files/folders are neccessary
+Library/
+ProjectSettings/
+
+# MonoDevelop created files
+*.unityproj
+*.sln
+*.pidb
+*.userprefs
+
+# Blend backup files
+*.blend?
