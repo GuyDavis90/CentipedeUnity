@@ -1,0 +1,188 @@
+fileFormatVersion: 2
+guid: f246cb73089f3c340b1ac67ff57b1d9f
+ModelImporter:
+  serializedVersion: 15
+  fileIDToRecycleName:
+    100000: Armature
+    100002: Ass
+    100004: Bone_008
+    100006: //RootNode
+    100008: Front_Body
+    100010: Head
+    100012: Head_0
+    100014: Jaw
+    100016: Left_Body
+    100018: Left_Foot
+    100020: Left_Jaw
+    100022: Left_Pincer_2
+    100024: Left_Pincer_3
+    100026: Left_Pincer_4
+    100028: Left_Pincer_End
+    100030: Left_Pincer_Start
+    100032: Left_Shoulder
+    100034: Leg
+    100036: Right_Body
+    100038: Right_Foot
+    100040: Right_Jaw
+    100042: Right_Leg
+    100044: Right_Pincer_2
+    100046: Right_Pincer_3
+    100048: Right_Pincer_4
+    100050: Right_Pincer_End
+    100052: Right_Pincer_Start
+    100054: Right_Shoulder
+    100056: Cube
+    400000: Armature
+    400002: Ass
+    400004: Bone_008
+    400006: //RootNode
+    400008: Front_Body
+    400010: Head
+    400012: Head_0
+    400014: Jaw
+    400016: Left_Body
+    400018: Left_Foot
+    400020: Left_Jaw
+    400022: Left_Pincer_2
+    400024: Left_Pincer_3
+    400026: Left_Pincer_4
+    400028: Left_Pincer_End
+    400030: Left_Pincer_Start
+    400032: Left_Shoulder
+    400034: Leg
+    400036: Right_Body
+    400038: Right_Foot
+    400040: Right_Jaw
+    400042: Right_Leg
+    400044: Right_Pincer_2
+    400046: Right_Pincer_3
+    400048: Right_Pincer_4
+    400050: Right_Pincer_End
+    400052: Right_Pincer_Start
+    400054: Right_Shoulder
+    400056: Cube
+    2300000: Cube
+    3300000: Cube
+    4300000: Head
+    4300002: Cube
+    7400000: Default Take
+    7400002: Idle
+    7400004: ObAction
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: Head
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 2
+    clipAnimations:
+    - name: Default Take
+      takeName: Default Take
+      firstFrame: 0
+      lastFrame: 249
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Idle
+      takeName: Idle
+      firstFrame: 0
+      lastFrame: 49
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: ObAction
+      takeName: ObAction
+      firstFrame: 10
+      lastFrame: 45
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    handles: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  additionalBone: 1
+  animationType: 1
+  userData: 
