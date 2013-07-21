@@ -3,10 +3,6 @@ Temp
 
 # Don't think these files/folders are neccessary
 Library/
-<<<<<<< HEAD
-ProjectSettings/
-=======
->>>>>>> update with metadatas
 
 # MonoDevelop created files
 *.unityproj
