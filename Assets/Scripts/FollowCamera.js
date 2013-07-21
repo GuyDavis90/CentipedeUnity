@@ -11,7 +11,6 @@ function Start () {
 	var followPlayer:Transform = world.Find("PlayerStart" + followIndex);
 	lookFrom = followPlayer.Find("Player" + followIndex + "/CameraFrom").transform;
 	lookTo = followPlayer.Find("Player" + followIndex + "/CameraTo").transform;
-	
 }
 
 function Update () {
