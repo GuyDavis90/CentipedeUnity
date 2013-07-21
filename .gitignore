@@ -2,8 +2,7 @@
 Temp
 
 # Don't think these files/folders are neccessary
-Library/metadata
-Library/ScriptAssemblies
+Library/
 ProjectSettings/
 
 # MonoDevelop created files
