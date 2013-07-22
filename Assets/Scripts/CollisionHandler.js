@@ -3,7 +3,7 @@
 var collider:UnityEngine.Collider;
 
 function Start () {
-
+	
 }
 
 function Update () {

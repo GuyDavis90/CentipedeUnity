@@ -2,10 +2,20 @@
 
 import System.Collections.Generic;
 
+private var isPlayer:boolean = false;
+private var decisionTime:float = 0.0f;
+
+private var turningLeft:boolean = false;
+private var turningRight:boolean = false;
+
 private var head:Transform;
 private var links:List.<Transform>;
 
 function Start () {
+	if (transform.parent.name == "PlayerStart0") {
+		isPlayer = true;
+	}
+
 	head = Transform.Instantiate(Resources.Load("CentipedeHead", Transform), transform.position, transform.rotation);
 	head.gameObject.name = "Head";
 	head.parent = transform;
@@ -20,15 +30,58 @@ function Start () {
 }
 
 function Update () {
-	head.position += head.forward * Time.deltaTime * 2.5f;
-	if (Input.GetKey("a")) {
-			head.rotation.eulerAngles.y -= 50.0f * Time.deltaTime;
+	// Handle direction changing
+	if (isPlayer) {
+		// Update direction based on keys
+		if (Input.GetKey("a")) {
+			turningLeft = true;
 		}
-	if (Input.GetKey("d")) {
-			head.rotation.eulerAngles.y += 50.0f * Time.deltaTime;
+		else {
+			turningLeft = false;
 		}
+		if (Input.GetKey("d")) {
+			turningRight = true;
+		}
+		else {
+			turningRight = false;
+		}
+	}
+	else {
+		// Update direction based on random turning
+		// yea stupid AI i know :P
+		// but good enough for testing purposes maybe xD
+		// actually, ill hack up something better sometime
+		// something like, getting the distance from center
+		// and then depending on which wall its closest to it will turn the opposite way
+		decisionTime -= Time.deltaTime;
+		if (decisionTime < 0.0f) {
+			var random:float = Random.value;
+			turningLeft = false;
+			turningRight = false;
+			if (random > 0.75f) {
+				// 25% chance to turn left
+				turningLeft = true;
+			}
+			else if (random > 0.5f) {
+				// 25% chance to turn right
+				turningRight = true;
+			}
+			decisionTime = random / 5;
+		}
+	}
 	if (Input.GetKeyDown("t")) {
 		addLink();
+	}
+
+	// Update position and rotations
+	head.position += head.forward * Time.deltaTime * 2.5f;
+	if (turningLeft ^ turningRight) {
+		if (turningLeft) {
+			head.rotation.eulerAngles.y -= 50.0f * Time.deltaTime;
+		}
+		if (turningRight) {
+			head.rotation.eulerAngles.y += 50.0f * Time.deltaTime;
+		}
 	}
 	updateLinks();
 }
