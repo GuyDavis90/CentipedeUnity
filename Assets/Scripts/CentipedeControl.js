@@ -20,15 +20,13 @@ function Start () {
 }
 
 function Update () {
-	if (Input.GetKey("w")) {
-		head.position += head.forward * Time.deltaTime * 2.5f;
-		if (Input.GetKey("a")) {
+	head.position += head.forward * Time.deltaTime * 2.5f;
+	if (Input.GetKey("a")) {
 			head.rotation.eulerAngles.y -= 50.0f * Time.deltaTime;
 		}
-		if (Input.GetKey("d")) {
+	if (Input.GetKey("d")) {
 			head.rotation.eulerAngles.y += 50.0f * Time.deltaTime;
 		}
-	}
 	if (Input.GetKeyDown("t")) {
 		addLink();
 	}
