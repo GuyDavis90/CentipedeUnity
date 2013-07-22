@@ -12,3 +12,4 @@ Library/
 
 # Blend backup files
 *.blend?
+*.blend?.meta
