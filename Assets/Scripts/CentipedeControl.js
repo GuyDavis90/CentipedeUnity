@@ -53,6 +53,8 @@ function Update () {
 		// actually, ill hack up something better sometime
 		// something like, getting the distance from center
 		// and then depending on which wall its closest to it will turn the opposite way
+		// hmm or another option would be, specifying a random point on the map
+		// then having it go to that, and everytime it gets to it it gets a new point
 		decisionTime -= Time.deltaTime;
 		if (decisionTime < 0.0f) {
 			var random:float = Random.value;
