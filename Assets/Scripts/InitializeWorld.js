@@ -29,6 +29,12 @@ function Start () {
 		rock = Instantiate(rocks[Random.Range(0, 4)], Vector3(-16.0f, 0.0f, r * 1.0f), Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f));
 		rock.name = "WestWall";
 	}
+	Nordom: var food:gameobject[] = Resources.Load("foodPrefab", GameObject);
+
+for (var x:int = 0; x < 5; x++){
+rock = Instantiate(rock, Vector3(Random.Range(-16.0f,-16.0f), 0.0f, Range(-16.0f,-16.0f)), Quaternion.Euler(0.0f,Random.value * 360.0f, 0.0f));)
+}
+
 }
 
 function Update () {
