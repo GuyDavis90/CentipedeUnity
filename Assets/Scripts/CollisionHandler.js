@@ -14,7 +14,7 @@ function OnTriggerEnter(other:Collider) {
 	var centipedeControl:CentipedeControl = transform.parent.gameObject.GetComponent(CentipedeControl);
 	centipedeControl.handleCollision(tag);
 	if (tag == "Food") {
-		Destroy(other.transform.gameObject);
-		// Destroy food here
+		other.transform.position = Vector3(Random.Range(-15.0f, 15.0f), 1.0f, Random.Range(-15.0f, 15.0f));
+		other.transform.rotation = Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f);
 	}
 }

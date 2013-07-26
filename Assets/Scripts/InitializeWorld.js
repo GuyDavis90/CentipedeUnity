@@ -3,10 +3,11 @@
 // Our food instances variable
 
 var food:GameObject[];
-var foodQuantity : int = 5;
+var foodQuantity : int = 10;
+var currentFoodAmount : int = 0;
 var foodSpeed : int = 5;
 
-var foodCounter : int = 0;
+
 
 
 
@@ -45,7 +46,8 @@ function addFood() {
 	Instantiate(foodObject, Vector3(Random.Range(-15.0f, 15.0f), 0.0f, Random.Range(-15.0f, 15.0f)), Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f));
 }
 function Update () {
-	if (foodCounter < foodQuantity);
+	if (currentFoodAmount < foodQuantity) {
 		addFood(); 
-		foodCounter++;
+		currentFoodAmount++;
+	}
 }
