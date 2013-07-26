@@ -68,6 +68,8 @@ ModelImporter:
     7400000: Default Take
     7400002: Idle
     7400004: ObAction
+    7400006: Death
+    7400008: Walk
     9500000: //RootNode
     11100000: //RootNode
     13700000: Head
@@ -84,10 +86,10 @@ ModelImporter:
     animationScaleError: .5
     animationWrapMode: 2
     clipAnimations:
-    - name: Default Take
-      takeName: Default Take
-      firstFrame: 0
-      lastFrame: 249
+    - name: Death
+      takeName: Death
+      firstFrame: 85
+      lastFrame: 109
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -109,7 +111,7 @@ ModelImporter:
       takeName: Idle
       firstFrame: 0
       lastFrame: 49
-      wrapMode: 2
+      wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
@@ -126,11 +128,11 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       transformMask: []
-    - name: ObAction
-      takeName: ObAction
-      firstFrame: 10
-      lastFrame: 45
-      wrapMode: 0
+    - name: Walk
+      takeName: Walk
+      firstFrame: 11
+      lastFrame: 38
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0

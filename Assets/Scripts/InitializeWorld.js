@@ -7,10 +7,6 @@ var foodQuantity : int = 10;
 var currentFoodAmount : int = 0;
 var foodSpeed : int = 5;
 
-
-
-
-
 function Start () {
 	var playerPrefab:Transform = Resources.Load("PlayerPrefab", Transform);
 	for (var i:int = 0; i < 16; i++) {

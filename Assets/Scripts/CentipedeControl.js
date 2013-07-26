@@ -2,6 +2,9 @@
 
 import System.Collections.Generic;
 
+private var startPosition:Vector3;
+private var startRotation:Quaternion;
+
 private var isPlayer:boolean = false;
 private var decisionTime:float = 0.0f;
 
@@ -11,16 +14,23 @@ private var turningRight:boolean = false;
 private var head:Transform;
 private var links:List.<Transform>;
 
+private var dying:boolean = false;
+
 function Start () {
+	startPosition = transform.position;
+	startRotation = transform.rotation;
 	if (transform.parent.name == "PlayerStart0") {
 		isPlayer = true;
 	}
-
 	head = Transform.Instantiate(Resources.Load("CentipedeHead", Transform), transform.position, transform.rotation);
 	head.gameObject.name = "Head";
 	head.parent = transform;
 	transform.Find("CameraFrom").transform.parent = head;
 	transform.Find("CameraTo").transform.parent = head;
+	initializeLinks();
+}
+
+function initializeLinks() {
 	links = new List.<Transform>();
 	var firstLink:Transform = Transform.Instantiate(Resources.Load("CentipedeLink", Transform), transform.position, transform.rotation);
 	firstLink.gameObject.name = "Link-0";
@@ -30,6 +40,9 @@ function Start () {
 }
 
 function Update () {
+	if (dying) {
+		return;
+	}
 	// Handle direction changing
 	if (isPlayer) {
 		// Update direction based on keys
@@ -92,6 +105,26 @@ function handleCollision(tag:String) {
 	if (tag == "Food") {
 		addLink();
 	}
+	else if (tag == "Rock") {
+		dying = true;
+		head.animation.Play("Death");
+		head.animation.PlayQueued("Walk");
+		for (var i:int = 0; i < links.Count; i++) {
+			links[i].animation.Play("Death");
+		}
+		StartCoroutine(respawn(head.animation["Death"].length));
+	}
+}
+
+function respawn(waitTime:float) {
+	yield WaitForSeconds(waitTime);
+	dying = false;
+	head.transform.position = startPosition;
+	head.transform.rotation = startRotation;
+	for (var i:int = 0; i < links.Count; i++) {
+		Destroy(links[i].gameObject);
+	}
+	initializeLinks();
 }
 
 function addLink() {
