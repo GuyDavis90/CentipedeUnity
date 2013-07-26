@@ -1,7 +1,14 @@
 #pragma strict
 
 // Our food instances variable
+
 var food:GameObject[];
+var foodQuantity : int = 5;
+var foodSpeed : int = 5;
+
+private var foodCounter : int = 0;
+
+
 
 function Start () {
 	var playerPrefab:Transform = Resources.Load("PlayerPrefab", Transform);
@@ -32,17 +39,12 @@ function Start () {
 		rock = Instantiate(rocks[Random.Range(0, 4)], Vector3(-16.0f, 0.0f, r * 1.0f), Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f));
 		rock.name = "WestWall";
 	}
-	// Nordom:
-	var foodObject:GameObject = Resources.Load("Food", GameObject);
-	food = new GameObject[5];
-	for (var x:int = 0; x < 5; x++) {
-		food[x] = Instantiate(foodObject, Vector3(Random.Range(-15.0f, 15.0f), 0.0f, Random.Range(-15.0f, 15.0f)), Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f));
-	}
 }
-
+function addFood() {
+	var foodObject:GameObject = Resources.Load("Food", GameObject);
+	Instantiate(foodObject, Vector3(Random.Range(-15.0f, 15.0f), 0.0f, Random.Range(-15.0f, 15.0f)), Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f));
+}
 function Update () {
-	for (var x:int = 0; x < 5; x++) {
-		// lets move the foods forward slowly
-		food[x].transform.position += food[x].transform.forward * Time.deltaTime;
-	}
+	if (foodCounter < foodQuantity);
+		addFood(); 
 }

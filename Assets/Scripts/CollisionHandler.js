@@ -14,6 +14,7 @@ function OnTriggerEnter(other:Collider) {
 	var centipedeControl:CentipedeControl = transform.parent.gameObject.GetComponent(CentipedeControl);
 	centipedeControl.handleCollision(tag);
 	if (tag == "Food") {
+		Destroy(other.transform.gameObject);
 		// Destroy food here
 	}
 }
