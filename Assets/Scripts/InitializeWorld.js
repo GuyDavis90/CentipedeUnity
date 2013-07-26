@@ -6,7 +6,7 @@ var food:GameObject[];
 var foodQuantity : int = 5;
 var foodSpeed : int = 5;
 
-private var foodCounter : int = 0;
+var foodCounter : int = 0;
 
 
 
@@ -47,4 +47,5 @@ function addFood() {
 function Update () {
 	if (foodCounter < foodQuantity);
 		addFood(); 
+		foodCounter++;
 }
