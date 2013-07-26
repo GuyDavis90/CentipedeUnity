@@ -94,7 +94,7 @@ function addLink() {
 	newLink.gameObject.name = "Link-" + links.Count;
 	newLink.parent = transform;
 	newLink.position -= newLink.forward * 0.5f;
-	links.Add(newLink);
+	links.Add(newLink);	
 }
 
 function updateLinks() {
