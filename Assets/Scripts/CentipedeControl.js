@@ -88,6 +88,12 @@ function Update () {
 	updateLinks();
 }
 
+function handleCollision(tag:String) {
+	if (tag == "Food") {
+		addLink();
+	}
+}
+
 function addLink() {
 	var lastLink:Transform = links[links.Count - 1];
 	var newLink:Transform = Transform.Instantiate(Resources.Load("CentipedeLink", Transform), lastLink.position, lastLink.rotation);
