@@ -44,21 +44,35 @@ function Update () {
 	}
 	// Handle direction changing
 	if (isPlayer) {
-		if (Input.GetKey("e")) {
-			head.position += head.forward * Time.deltaTime * 2.5f;
-		}
-		// Update direction based on keys
-		if (Input.GetKey("a")) {
-			turningLeft = true;
-		}
-		else {
+		if (Application.platform == RuntimePlatform.Android) { // Android platform
 			turningLeft = false;
-		}
-		if (Input.GetKey("d")) {
-			turningRight = true;
-		}
-		else {
 			turningRight = false;
+			if (Input.touchCount == 1) {
+				if (Input.GetTouch(0).position.x < Screen.width * 0.25f) {
+					turningLeft = true;
+				}
+				if (Input.GetTouch(0).position.x > Screen.width * 0.75f) {
+					turningRight = true;
+				}
+			}
+		}
+		else { // Non-mobile platform
+			if (Input.GetKey("e")) {
+				head.position += head.forward * Time.deltaTime * 2.5f;
+			}
+			// Update direction based on keys
+			if (Input.GetKey("a")) {
+				turningLeft = true;
+			}
+			else {
+				turningLeft = false;
+			}
+			if (Input.GetKey("d")) {
+				turningRight = true;
+			}
+			else {
+				turningRight = false;
+			}
 		}
 	}
 	else {
