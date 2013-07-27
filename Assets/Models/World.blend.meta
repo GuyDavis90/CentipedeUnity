@@ -20,6 +20,14 @@ ModelImporter:
     100028: PlayerStart12
     100030: PlayerStart4
     100032: PlayerStart8
+    100034: WallEast
+    100036: WallNorth
+    100038: WallSouth
+    100040: WallWest
+    100042: EastWall
+    100044: NorthWall
+    100046: SouthWall
+    100048: WestWall
     400000: Cube
     400002: Cube_001
     400004: Cube_002
@@ -37,6 +45,14 @@ ModelImporter:
     400028: PlayerStart12
     400030: PlayerStart4
     400032: PlayerStart8
+    400034: WallEast
+    400036: WallNorth
+    400038: WallSouth
+    400040: WallWest
+    400042: EastWall
+    400044: NorthWall
+    400046: SouthWall
+    400048: WestWall
     2300000: Cube
     2300002: Cube_001
     2300004: Cube_002

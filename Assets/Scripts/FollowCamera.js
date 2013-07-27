@@ -2,18 +2,18 @@
 
 static var followIndex = 0;
 
-private var lookFrom:Transform;
-private var lookTo:Transform;
-
 var world:Transform;
 
+private var lookTo:Transform;
+
 function Start () {
-	var followPlayer:Transform = world.Find("PlayerStart" + followIndex);
-	lookFrom = followPlayer.Find("Player" + followIndex + "/CameraFrom").transform;
-	lookTo = followPlayer.Find("Player" + followIndex + "/CameraTo").transform;
+	var followPlayer:Transform = world.Find("Player" + followIndex);
+	var lookFrom:Transform = followPlayer.Find("Head/CameraFrom");
+	transform.position = lookFrom.position;
+	transform.parent = lookFrom;
+	lookTo = followPlayer.Find("Head/CameraTo");
 }
 
 function Update () {
-	transform.position = lookFrom.position;
-	transform.LookAt(lookTo.position);
+	transform.LookAt(lookTo);
 }

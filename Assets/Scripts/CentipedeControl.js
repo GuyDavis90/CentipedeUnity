@@ -17,22 +17,21 @@ private var links:List.<Transform>;
 private var dying:boolean = false;
 
 function Start () {
-	startPosition = transform.position;
-	startRotation = transform.rotation;
-	if (transform.parent.name == "PlayerStart0") {
+	if (transform.name == "Player0") {
 		isPlayer = true;
 	}
-	head = Transform.Instantiate(Resources.Load("CentipedeHead", Transform), transform.position, transform.rotation);
-	head.gameObject.name = "Head";
-	head.parent = transform;
-	transform.Find("CameraFrom").transform.parent = head;
-	transform.Find("CameraTo").transform.parent = head;
+	startRotation = transform.rotation;
+	transform.rotation = Quaternion.identity;
+	startPosition = transform.position - (Quaternion.Euler(0.0f, startRotation.eulerAngles.y, 0.0f) * Vector3(0.0f, 0.0f, 1.0f)) * 14.0f;
+	head = transform.Find("Head");
+	head.rotation = startRotation;
+	head.position = startPosition;
 	initializeLinks();
 }
 
 function initializeLinks() {
 	links = new List.<Transform>();
-	var firstLink:Transform = Transform.Instantiate(Resources.Load("CentipedeLink", Transform), transform.position, transform.rotation);
+	var firstLink:Transform = Transform.Instantiate(Resources.Load("CentipedeLink", Transform), startPosition, startRotation);
 	firstLink.gameObject.name = "Link-0";
 	firstLink.transform.parent = transform;
 	firstLink.transform.position -= firstLink.transform.forward * 0.5f;
@@ -45,6 +44,9 @@ function Update () {
 	}
 	// Handle direction changing
 	if (isPlayer) {
+		if (Input.GetKey("e")) {
+			head.position += head.forward * Time.deltaTime * 2.5f;
+		}
 		// Update direction based on keys
 		if (Input.GetKey("a")) {
 			turningLeft = true;
@@ -60,28 +62,56 @@ function Update () {
 		}
 	}
 	else {
-		// Update direction based on random turning
-		// yea stupid AI i know :P
-		// but good enough for testing purposes maybe xD
-		// actually, ill hack up something better sometime
-		// something like, getting the distance from center
-		// and then depending on which wall its closest to it will turn the opposite way
-		// hmm or another option would be, specifying a random point on the map
-		// then having it go to that, and everytime it gets to it it gets a new point
-		decisionTime -= Time.deltaTime;
-		if (decisionTime < 0.0f) {
-			var random:float = Random.value;
-			turningLeft = false;
-			turningRight = false;
-			if (random > 0.75f) {
-				// 25% chance to turn left
-				turningLeft = true;
+		var nearestDistanceSqr = Mathf.Infinity;
+		var taggedGameObjects = GameObject.FindGameObjectsWithTag("Food"); 
+		var nearestObj:Transform = null;
+		// loop through each tagged object, remembering nearest one found
+		for (var obj:GameObject in taggedGameObjects) {
+			var objectPos = obj.transform.position;
+			var distanceSqr = (objectPos - head.position).sqrMagnitude;
+			if (distanceSqr < nearestDistanceSqr) {
+				nearestObj = obj.transform;
+				nearestDistanceSqr = distanceSqr;
 			}
-			else if (random > 0.5f) {
-				// 25% chance to turn right
+		}
+		turningLeft = false;
+		turningRight = false;
+		if (nearestObj != null) {
+			var difference:Vector3 = nearestObj.position - head.position;
+			Debug.DrawLine(nearestObj.position, head.position, Color.red);
+			var rotation = Quaternion.LookRotation(difference);
+			var rotationDifference:float = head.rotation.eulerAngles.y - rotation.eulerAngles.y;
+			rotationDifference = Mathf.Repeat(rotationDifference + 180.0f, 360.0f) - 180.0f;
+			/*if (rotationDifference < -180.0f) {
+				rotationDifference += 360.0f;
+			}
+			if (rotationDifference > 180.0f) {
+				rotationDifference -= 360.0f;
+			}*/
+			if (rotationDifference < 0.0f) {
 				turningRight = true;
 			}
-			decisionTime = random / 5;
+			else if (rotationDifference > 0.0f) {
+				turningLeft = true;
+			}
+		}
+		// cast ray from centipede to nearest food and if it will collide with itself then pick another
+		// probably best to get all foods, sort them by their distance, and go through until it finds a suitable one
+		// close, infront of centipede rather than behind, not hitting itself, not hitting other centipede, etc
+		var headAdjusted:Vector3 = head.position + Vector3(0.0f, 0.25f, 0.0f);
+		var hit:RaycastHit;
+		//Debug.DrawLine(headAdjusted, headAdjusted + head.forward * 100.0f, Color.green);
+		if (Physics.Raycast(headAdjusted, head.forward, hit)) {
+			if (hit.transform.name == "Food") {
+				// keep going forwards
+			}
+			else {
+				// if its a rock do turning based on position and facing (so turn away from walls)
+				if (hit.transform.name == "Link") {
+					// find head, and which direction, and go other way (while still avoiding walls/self)
+					Debug.Log("Centipede ahead! :O");
+				}
+			}
 		}
 	}
 	if (Input.GetKeyDown("t")) {
@@ -92,28 +122,50 @@ function Update () {
 	head.position += head.forward * Time.deltaTime * 2.5f;
 	if (turningLeft ^ turningRight) {
 		if (turningLeft) {
-			head.rotation.eulerAngles.y -= 50.0f * Time.deltaTime;
+			head.rotation.eulerAngles.y -= 90.0f * Time.deltaTime;
 		}
 		if (turningRight) {
-			head.rotation.eulerAngles.y += 50.0f * Time.deltaTime;
+			head.rotation.eulerAngles.y += 90.0f * Time.deltaTime;
 		}
 	}
 	updateLinks();
 }
 
-function handleCollision(tag:String) {
-	if (tag == "Food") {
+function handleCollision(hit:Transform) {
+	var name:String = hit.name;
+	var parentName:String = hit.parent ? hit.parent.name : "";
+	if (parentName == transform.name) {
+		if (name == "Link-0") {
+			// Ignore
+		}
+		else {
+			die();
+		}
+		return;
+	}
+	else if (parentName == "Wall") {
+		die();
+	}
+	else if (name == "Food") {
 		addLink();
 	}
-	else if (tag == "Rock") {
-		dying = true;
-		head.animation.Play("Death");
-		head.animation.PlayQueued("Walk");
-		for (var i:int = 0; i < links.Count; i++) {
-			links[i].animation.Play("Death");
+	else if (name == "Head") {
+		if ((transform.position - hit.position).z > 0.0f) {
+			die();
 		}
-		StartCoroutine(respawn(head.animation["Death"].length));
 	}
+	else if (name == "Link" || name == "Link-0") {//Regex.IsMatch(name, "Link-[0-9]+")) {
+		die();
+	}
+}
+
+function die() {
+	dying = true;
+	head.animation.Play("Death");
+	for (var i:int = 0; i < links.Count; i++) {
+		links[i].animation.Play("Death");
+	}
+	StartCoroutine(respawn(head.animation["Death"].length));
 }
 
 function respawn(waitTime:float) {
@@ -121,6 +173,7 @@ function respawn(waitTime:float) {
 	dying = false;
 	head.transform.position = startPosition;
 	head.transform.rotation = startRotation;
+	head.animation.Play("Walk");
 	for (var i:int = 0; i < links.Count; i++) {
 		Destroy(links[i].gameObject);
 	}
@@ -130,7 +183,7 @@ function respawn(waitTime:float) {
 function addLink() {
 	var lastLink:Transform = links[links.Count - 1];
 	var newLink:Transform = Transform.Instantiate(Resources.Load("CentipedeLink", Transform), lastLink.position, lastLink.rotation);
-	newLink.gameObject.name = "Link-" + links.Count;
+	newLink.gameObject.name = "Link";//-" + links.Count;
 	newLink.parent = transform;
 	newLink.position -= newLink.forward * 0.5f;
 	links.Add(newLink);	
