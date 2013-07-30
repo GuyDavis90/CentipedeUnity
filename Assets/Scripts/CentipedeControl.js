@@ -16,14 +16,18 @@ private var links:List.<Transform>;
 
 private var dying:boolean = false;
 
+private var material:Material;
+
 function Start () {
 	if (transform.name == "Player0") {
 		isPlayer = true;
 	}
+	material = Resources.Load("PlayerMaterials/" + transform.name, Material);
 	startRotation = transform.rotation;
 	transform.rotation = Quaternion.identity;
 	startPosition = transform.position - (Quaternion.Euler(0.0f, startRotation.eulerAngles.y, 0.0f) * Vector3(0.0f, 0.0f, 1.0f)) * 14.0f;
 	head = transform.Find("Head");
+	setMaterial(head);
 	head.rotation = startRotation;
 	head.position = startPosition;
 	initializeLinks();
@@ -32,6 +36,7 @@ function Start () {
 function initializeLinks() {
 	links = new List.<Transform>();
 	var firstLink:Transform = Transform.Instantiate(Resources.Load("CentipedeLink", Transform), startPosition, startRotation);
+	setMaterial(firstLink);
 	firstLink.gameObject.name = "Link-0";
 	firstLink.transform.parent = transform;
 	firstLink.transform.position -= firstLink.transform.forward * 0.5f;
@@ -96,12 +101,6 @@ function Update () {
 			var rotation = Quaternion.LookRotation(difference);
 			var rotationDifference:float = head.rotation.eulerAngles.y - rotation.eulerAngles.y;
 			rotationDifference = Mathf.Repeat(rotationDifference + 180.0f, 360.0f) - 180.0f;
-			/*if (rotationDifference < -180.0f) {
-				rotationDifference += 360.0f;
-			}
-			if (rotationDifference > 180.0f) {
-				rotationDifference -= 360.0f;
-			}*/
 			if (rotationDifference < 0.0f) {
 				turningRight = true;
 			}
@@ -168,7 +167,7 @@ function handleCollision(hit:Transform) {
 			die();
 		}
 	}
-	else if (name == "Link" || name == "Link-0") {//Regex.IsMatch(name, "Link-[0-9]+")) {
+	else if (name == "Link" || name == "Link-0") {
 		die();
 	}
 }
@@ -197,7 +196,8 @@ function respawn(waitTime:float) {
 function addLink() {
 	var lastLink:Transform = links[links.Count - 1];
 	var newLink:Transform = Transform.Instantiate(Resources.Load("CentipedeLink", Transform), lastLink.position, lastLink.rotation);
-	newLink.gameObject.name = "Link";//-" + links.Count;
+	setMaterial(newLink);
+	newLink.gameObject.name = "Link";
 	newLink.parent = transform;
 	newLink.position -= newLink.forward * 0.5f;
 	links.Add(newLink);	
@@ -213,4 +213,11 @@ function updateLinks() {
 function updateLink(link:Transform, lookAt:Transform) {
 	link.LookAt(lookAt);
 	link.position = lookAt.position - link.forward * 0.5f;
+}
+
+function setMaterial(node:Transform) {
+	var tempRenderers = node.GetComponentsInChildren(Renderer);
+	for (var temp:Renderer in tempRenderers) {
+		temp.material = material;
+	}
 }
