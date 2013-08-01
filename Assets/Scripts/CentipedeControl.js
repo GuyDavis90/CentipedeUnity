@@ -17,8 +17,8 @@ private var links:List.<Transform>;
 private var dying:boolean = false;
 
 private var material:Material;
-var MovementSpeed : int = 5f;
-var RespawnPlayer : boolean = true;
+var movementSpeed : int = 5f;
+var respawnPlayer : boolean = true;
 
 function Start () {
 	if (transform.name == "Player0") {
@@ -98,7 +98,7 @@ function Update () {
 		turningLeft = false;
 		turningRight = false;
 		if (nearestObj != null) {
-			headTowardsObject(nearestObj, head);
+			HeadTowardsObject(nearestObj, head);
 		}
 		// cast ray from centipede to nearest food and if it will collide with itself then pick another
 		// probably best to get all foods, sort them by their distance, and go through until it finds a suitable one
@@ -112,15 +112,20 @@ function Update () {
 			}
 			else {
 				// if its a rock do turning based on position and facing (so turn away from walls)
+				if (hit.transform.name == "Head") {
+					// find head, and which direction, and go other way (while still avoiding walls/self)
+					Debug.Log("Centipede ahead! :O");
+					AvoidObject(hit.transform, head);
+				}
 				if (hit.transform.name == "Link") {
 					// find head, and which direction, and go other way (while still avoiding walls/self)
 					Debug.Log("Centipede ahead! :O");
-					avoidObject(hit.transform, head);
+					AvoidObject(hit.transform, head);
 				}
 				if (hit.transform.name == "rock") {
 					// find head, and which direction, and go other way (while still avoiding walls/self)
 					Debug.Log("Centipede ahead! :O");
-					avoidObject(hit.transform, head);
+					AvoidObject(hit.transform, head);
 				}
 			}
 		}
@@ -130,7 +135,7 @@ function Update () {
 	}
 
 	// Update position and rotations
-	head.position += head.forward * Time.deltaTime * MovementSpeed;
+	head.position += head.forward * Time.deltaTime * movementSpeed;
 	if (turningLeft ^ turningRight) {
 		if (turningLeft) {
 			head.rotation.eulerAngles.y -= 90.0f * Time.deltaTime;
@@ -180,7 +185,7 @@ function die() {
 }
 
 function respawn(waitTime:float) {
-	if (RespawnPlayer == true) {
+	if (respawnPlayer == true) {
 		yield WaitForSeconds(waitTime);
 		dying = false;
 		head.transform.position = startPosition;
@@ -221,7 +226,7 @@ function setMaterial(node:Transform) {
 		temp.material = material;
 	}
 }
-function headTowardsObject(obj1:Transform, obj2:Transform) {
+function HeadTowardsObject(obj1:Transform, obj2:Transform) {
 	var difference:Vector3 = obj1.position - obj2.position;
 	Debug.DrawLine(obj1.position, obj2.position, Color.red);
 	var rotation = Quaternion.LookRotation(difference);
@@ -234,12 +239,13 @@ function headTowardsObject(obj1:Transform, obj2:Transform) {
 		turningLeft = true;
 	}
 }
-function avoidObject(obj1:Transform, obj2:Transform) {
+function AvoidObject(obj1:Transform, obj2:Transform) {
 	var difference:Vector3 = obj1.position - obj2.position;
 	Debug.DrawLine(obj1.position, obj2.position, Color.green);
 	var rotation = Quaternion.LookRotation(difference);
 	var rotationDifference:float = obj2.rotation.eulerAngles.y - rotation.eulerAngles.y;
-	rotationDifference = Mathf.Repeat(rotationDifference + 180.0f, 360.0f) - 180.0f;
+	rotationDifference = Mathf.Repeat(rotationDifference, 360.0f);
+	Debug.Log(rotationDifference);
 	if (rotationDifference < 0.0f) {
 		turningLeft = true;
 	}
