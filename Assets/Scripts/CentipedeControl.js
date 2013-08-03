@@ -217,7 +217,7 @@ function updateLink(link:Transform, lookAt:Transform) {
 }
 
 function setMaterial(node:Transform) {
-	var tempRenderers = node.GetComponentsInChildren(Renderer);
+	var tempRenderers:Renderer[] = node.GetComponentsInChildren.<Renderer>();
 	for (var temp:Renderer in tempRenderers) {
 		temp.material = material;
 	}
