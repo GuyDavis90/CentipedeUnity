@@ -8,6 +8,8 @@ private var startRotation:Quaternion;
 private var isPlayer:boolean = false;
 private var decisionTime:float = 0.0f;
 
+private var objectToAvoid:Transform = null;
+
 private var turningLeft:boolean = false;
 private var turningRight:boolean = false;
 
@@ -83,50 +85,43 @@ function Update () {
 		}
 	}
 	else {
-		var nearestDistanceSqr = Mathf.Infinity;
-		var taggedGameObjects = GameObject.FindGameObjectsWithTag("Food"); 
-		var nearestObj:Transform = null;
-		// loop through each tagged object, remembering nearest one found
-		for (var obj:GameObject in taggedGameObjects) {
-			var objectPos = obj.transform.position;
-			var distanceSqr = (objectPos - head.position).sqrMagnitude;
-			if (distanceSqr < nearestDistanceSqr) {
-				nearestObj = obj.transform;
-				nearestDistanceSqr = distanceSqr;
+		decisionTime -= Time.deltaTime;
+		if (decisionTime < 0.0f) {
+			if (!objectToAvoid) {
+				turningLeft = false;
+				turningRight = false;
 			}
-		}
-		turningLeft = false;
-		turningRight = false;
-		if (nearestObj != null) {
-			HeadTowardsObject(nearestObj, head);
-		}
-		// cast ray from centipede to nearest food and if it will collide with itself then pick another
-		// probably best to get all foods, sort them by their distance, and go through until it finds a suitable one
-		// close, infront of centipede rather than behind, not hitting itself, not hitting other centipede, etc
-		var headAdjusted:Vector3 = head.position + Vector3(0.0f, 0.25f, 0.0f);
-		var hit:RaycastHit;
-		//Debug.DrawLine(headAdjusted, headAdjusted + head.forward * 100.0f, Color.green);
-		if (Physics.Raycast(headAdjusted, head.forward, hit)) {
-			if (hit.transform.name == "Food") {
-				// keep going forwards
+			// cast ray from centipede to nearest food and if it will collide with itself then pick another
+			// probably best to get all foods, sort them by their distance, and go through until it finds a suitable one
+			// close, infront of centipede rather than behind, not hitting itself, not hitting other centipede, etc
+			var headAdjusted:Vector3 = head.position + Vector3(0.0f, 0.25f, 0.0f);
+			var hit:RaycastHit;
+			//Debug.DrawLine(headAdjusted, headAdjusted + head.forward * 100.0f, Color.green);
+			if (Physics.Raycast(headAdjusted, head.forward, hit)) {
+				Debug.Log("Ray hit something: " + hit.transform.name);
+				if (hit.transform.name == "Food") {
+					// keep going forwards
+				}
+				else {
+					// if its a rock do turning based on position and facing (so turn away from walls)
+					if (hit.transform.name == "Head" || hit.transform.name == "Link" || hit.transform.name == "Link-0") {
+						avoidCentipede(hit.transform.parent);
+					}
+					if (hit.transform.name == "Rock0" ||
+						hit.transform.name == "Rock1" ||
+						hit.transform.name == "Rock2" ||
+						hit.transform.name == "Rock3") {
+						avoidRock(hit.transform.parent);
+					}
+				}
 			}
-			else {
-				// if its a rock do turning based on position and facing (so turn away from walls)
-				if (hit.transform.name == "Head") {
-					// find head, and which direction, and go other way (while still avoiding walls/self)
-					Debug.Log("Centipede ahead! :O");
-					AvoidObject(hit.transform, head);
+			if (objectToAvoid) {
+				if (Vector3.Distance(head.position, objectToAvoid.position) > 7.5f || Mathf.Abs(getAngleTo(objectToAvoid)) > 45.0f) {
+					objectToAvoid = null;
 				}
-				if (hit.transform.name == "Link") {
-					// find head, and which direction, and go other way (while still avoiding walls/self)
-					Debug.Log("Centipede ahead! :O");
-					AvoidObject(hit.transform, head);
-				}
-				if (hit.transform.name == "rock") {
-					// find head, and which direction, and go other way (while still avoiding walls/self)
-					Debug.Log("Centipede ahead! :O");
-					AvoidObject(hit.transform, head);
-				}
+			}
+			if (!objectToAvoid) {
+				huntFood();
 			}
 		}
 	}
@@ -135,13 +130,14 @@ function Update () {
 	}
 
 	// Update position and rotations
-	head.position += head.forward * Time.deltaTime * movementSpeed;
+	var updateMultiplier:float = Time.deltaTime * movementSpeed;
+	head.position += head.forward * updateMultiplier;
 	if (turningLeft ^ turningRight) {
 		if (turningLeft) {
-			head.rotation.eulerAngles.y -= 90.0f * Time.deltaTime;
+			head.Rotate(Vector3(0.0f, -30.0f * updateMultiplier, 0.0f));
 		}
 		if (turningRight) {
-			head.rotation.eulerAngles.y += 90.0f * Time.deltaTime;
+			head.Rotate(Vector3(0.0f, 30.0f * updateMultiplier, 0.0f));
 		}
 	}
 	updateLinks();
@@ -226,30 +222,73 @@ function setMaterial(node:Transform) {
 		temp.material = material;
 	}
 }
-function HeadTowardsObject(obj1:Transform, obj2:Transform) {
-	var difference:Vector3 = obj1.position - obj2.position;
-	Debug.DrawLine(obj1.position, obj2.position, Color.red);
-	var rotation = Quaternion.LookRotation(difference);
-	var rotationDifference:float = obj2.rotation.eulerAngles.y - rotation.eulerAngles.y;
-	rotationDifference = Mathf.Repeat(rotationDifference + 180.0f, 360.0f) - 180.0f;
+
+function headTowardsObject(obj:Transform) {
+	var rotationDifference:float = getAngleTo(obj);
 	if (rotationDifference < 0.0f) {
 		turningRight = true;
+		turningLeft = false;
 	}
 	else if (rotationDifference > 0.0f) {
 		turningLeft = true;
+		turningRight = false;
 	}
 }
-function AvoidObject(obj1:Transform, obj2:Transform) {
-	var difference:Vector3 = obj1.position - obj2.position;
-	Debug.DrawLine(obj1.position, obj2.position, Color.green);
-	var rotation = Quaternion.LookRotation(difference);
-	var rotationDifference:float = obj2.rotation.eulerAngles.y - rotation.eulerAngles.y;
-	rotationDifference = Mathf.Repeat(rotationDifference, 360.0f);
-	Debug.Log(rotationDifference);
+
+function avoidObject(obj:Transform) {
+	var rotationDifference:float = getAngleTo(obj);
 	if (rotationDifference < 0.0f) {
 		turningLeft = true;
+		turningRight = false;
 	}
-	else if (rotationDifference > 0.0f) {
+	else {
 		turningRight = true;
+		turningLeft = false;
 	}
+}
+
+function huntFood() {
+	var nearestDistanceSqr = Mathf.Infinity;
+	var taggedGameObjects = GameObject.FindGameObjectsWithTag("Food"); 
+	var nearestObj:Transform = null;
+	// loop through each tagged object, remembering nearest one found
+	for (var obj:GameObject in taggedGameObjects) {
+		var objectPos = obj.transform.position;
+		var distanceSqr = (objectPos - head.position).sqrMagnitude;
+		if (distanceSqr < nearestDistanceSqr) {
+			nearestObj = obj.transform;
+			nearestDistanceSqr = distanceSqr;
+		}
+	}
+	if (nearestObj != null) {
+		headTowardsObject(nearestObj);
+	}
+}
+
+function avoidCentipede(centipede:Transform) {
+	if (centipede == transform) {
+		Debug.Log("Looking at ourself! :O");
+	}
+	var newObject:Transform = centipede.Find("Head");
+	Debug.Log("distance: " + Vector3.Distance(head.position, newObject.position));
+	if (newObject != objectToAvoid) {
+		objectToAvoid = newObject;
+		avoidObject(objectToAvoid);
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function avoidRock(rockWall:Transform) {
+	Debug.Log("Looking at rockwall! :O " + rockWall.name);
+}
+
+function getAngleTo(obj:Transform) {
+	var difference:Vector3 = obj.position - head.position;
+	Debug.DrawLine(obj.position, head.position, Color.green);
+	var rotation = Quaternion.LookRotation(difference);
+	var rotationDifference:float = head.rotation.eulerAngles.y - rotation.eulerAngles.y;
+	return Mathf.Repeat(rotationDifference + 180.0f, 360.0f) - 180.0f;
 }
