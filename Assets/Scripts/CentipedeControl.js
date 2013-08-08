@@ -19,7 +19,7 @@ private var links:List.<Transform>;
 private var dying:boolean = false;
 
 private var material:Material;
-var movementSpeed : int = 5f;
+var movementSpeed : float = 5.0f;
 var respawnPlayer : boolean = true;
 
 function Start () {
