@@ -4,7 +4,7 @@ var numberOfPlayers:int = 8;
 
 var foodQuantity : int = 10;
 // Our food instances variable
-private var food:GameObject[];
+private var food : GameObject[];
 private var foodSpeed : int = 5;
 
 function Start () {
